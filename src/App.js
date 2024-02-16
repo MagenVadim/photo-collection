@@ -7,36 +7,20 @@ function App() {
 
   const [collections, setCollections] = useState([]);
   
-  function data (){
-    let fetchData = []
-
-    JSONdata.map((obj)=>{
-      fetchData.push(obj)
-    })
-    setCollections(fetchData)  ;
-  }
+const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
 
   useEffect(()=>{
-    data ()
+    fetch(url)
+    .then((res)=>res.json())
+    .then((json)=>{
+      setCollections(json);
+      console.log(json);
+    })
+    .catch((err)=>{
+      console.log(err);
+      alert('Error');
+    });
   },[])
- 
-  // function fetchData (){
-  //   fetch('./public/data.json',{
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Accept": "application/json",
-  //     },
-  //   })
-  //   .then((res)=>res.json())
-  //   .then((json)=>{
-  //     setCollections(json);
-  //   })
-  //   .catch((err)=>{
-  //     console.log(err);
-  //     alert('Error');
-  //   });
-  // }
-
   
 
   return (
