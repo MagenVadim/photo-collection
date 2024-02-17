@@ -15,12 +15,18 @@ function App() {
   const [searchValue, setSearchValue] = useState('');
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1)
   
-const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
+
 
   useEffect(()=>{
     setIsLoading(true);
-    fetch(`https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo?${categoryID ? `category=${categoryID}`: ''}`)
+
+    const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo?"
+    const category = categoryID ? `category=${categoryID}`: ''
+    
+
+    fetch(`https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo?page=${page}&limit=3&${category}`)
     .then((res)=>res.json())
     .then((json)=>{
       setCollections(json);
@@ -30,7 +36,7 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
       console.log(err);
       alert('Error');
     }).finally(()=>setIsLoading(false));
-  },[categoryID])
+  },[categoryID, page])
   
 
   return (
@@ -44,7 +50,10 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
             categories.map((obj, i) => (
               <li key={obj.name}
                className={categoryID === i ? 'active' : ''}
-               onClick={()=>setCategoryId(i)}
+               onClick={()=>{
+                setCategoryId(i);
+                setPage(1);
+              }}
               >
                 {obj.name}
               </li>
@@ -59,8 +68,7 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
           placeholder="Search by name"
         />
 
-      </div>
-      
+      </div>      
 
       <div className="content">
 
@@ -82,9 +90,16 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
       </div>
 
       <ul className="pagination">
-        <li>1</li>
-        <li className="active">2</li>
-        <li>3</li>
+            {[...Array(5)].map((_, i)=>(
+              <li
+               className={page===i+1 ? 'active' : ''}
+               onClick={()=>setPage(i+1)}
+              >
+                {i+1}
+              </li>
+            ))
+
+            }
       </ul>
     </div>
   );
