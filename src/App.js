@@ -1,10 +1,18 @@
 import React from 'react'
 import Content from './Content' 
 import { useState, useEffect, useRef } from "react";
-import JSONdata from './data.json'
+
+const categories = [
+  {"name":"All"},
+  {"name":"Nature"},
+  {"name":"Cities"},
+  {"name":"Wildlife"},
+  {"name":"Traveling"}
+]
 
 function App() {
-
+  const [categoryID, setCategoryId] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
   const [collections, setCollections] = useState([]);
   
 const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
@@ -30,26 +38,39 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
       <div className="top">
 
         <ul className="tags">
-          <li className="active">All</li>
-          <li>Nature</li>
-          <li>Cities</li>
-          <li>Wildlife</li>
-          <li>Traveling</li>
+          {
+            categories.map((obj, i) => (
+              <li key={obj.name}
+               className={categoryID === i ? 'active' : ''}
+               onClick={()=>setCategoryId(i)}
+              >
+                {obj.name}
+              </li>
+            ))
+          }
         </ul>
 
-        <input className="search-input" placeholder="Search by name"/>        
+        <input 
+          value={searchValue}
+          onChange={e=>setSearchValue(e.target.value)}
+          className="search-input" 
+          placeholder="Search by name"
+        />
+
       </div>
       
 
       <div className="content">
 
-          {collections.map((obj, index)=>(
-            <Content 
-            key={index}
-            name={obj.name}
-            images={obj.photos}
-            />
-          ))} 
+          {collections
+            .filter((obj)=> obj.name.toLowerCase().includes(searchValue.toLowerCase()))
+            .map((obj, index)=>(
+              <Content 
+              key={index}
+              name={obj.name}
+              images={obj.photos}
+              />
+            ))} 
 
       </div>
 
