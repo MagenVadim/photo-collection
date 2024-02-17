@@ -14,11 +14,13 @@ function App() {
   const [categoryID, setCategoryId] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [collections, setCollections] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
 const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
 
   useEffect(()=>{
-    fetch(url)
+    setIsLoading(true);
+    fetch(`https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo?${categoryID ? `category=${categoryID}`: ''}`)
     .then((res)=>res.json())
     .then((json)=>{
       setCollections(json);
@@ -27,8 +29,8 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
     .catch((err)=>{
       console.log(err);
       alert('Error');
-    });
-  },[])
+    }).finally(()=>setIsLoading(false));
+  },[categoryID])
   
 
   return (
@@ -62,7 +64,10 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
 
       <div className="content">
 
-          {collections
+          { isLoading ? (
+            <h3>Loading...</h3>
+          ) : (
+            collections
             .filter((obj)=> obj.name.toLowerCase().includes(searchValue.toLowerCase()))
             .map((obj, index)=>(
               <Content 
@@ -70,7 +75,9 @@ const url = "https://65cec9b3bdb50d5e5f59f964.mockapi.io/travel/photo"
               name={obj.name}
               images={obj.photos}
               />
-            ))} 
+            ))
+          )          
+            } 
 
       </div>
 
